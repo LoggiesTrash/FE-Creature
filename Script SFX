@@ -1,0 +1,201 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
+
+-- Replace with actual usernames
+local altUsernames = {
+	Head = "YourAltUsernameHere", -- Your Head
+	Torso = "YourAltUsernameHere", -- Your Torso
+	SecondTorso = "YourAltUsernameHere", -- Your Second Torso
+	RightArm = "YourAltUsernameHere", -- Your Right Arm
+	LeftArm = "YourAltUsernameHere", -- Your Left Arm
+	RightLeg = "YourAltUsernameHere", -- Your Right Leg
+	LeftLeg = "YourAltUsernameHere" -- Your Left Leg
+}
+
+local jumpSound = Instance.new("Sound")
+jumpSound.SoundId = "rbxassetid://9114890978"
+jumpSound.Parent = SoundService
+
+local fallSound = Instance.new("Sound")
+fallSound.SoundId = "rbxassetid://3923230963"
+fallSound.Parent = SoundService
+
+local headCharacter = game.Workspace[altUsernames.Head]
+if headCharacter:FindFirstChild("Animate") then
+	headCharacter.Animate:Destroy()
+end
+if headCharacter:FindFirstChildOfClass("Humanoid") then
+	headCharacter.Humanoid.HipHeight = 4
+end
+if headCharacter:FindFirstChildOfClass("Humanoid") then
+	headCharacter.Humanoid.JumpPower = 120
+end
+
+local mechParts = {
+	workspace[altUsernames.Torso],
+	workspace[altUsernames.SecondTorso],
+	workspace[altUsernames.LeftLeg],
+	workspace[altUsernames.RightLeg],
+	workspace[altUsernames.RightArm],
+	workspace[altUsernames.LeftArm]
+}
+
+local Idle = {
+	{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+	{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+	{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 1) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-90))},
+	{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 6) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-90))},
+	{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 6) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-90))},
+	{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 1) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-90))},
+}
+
+local WalkingAnimations = {
+	{
+		{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+		{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+		{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 1) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-180))},
+		{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 6) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-180))},
+		{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 6) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-180))},
+		{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 1) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-180))},
+	},
+	{
+		{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+		{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+		{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 1) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-60))},
+		{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 6) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-60))},
+		{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 6) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-60))},
+		{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 1) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-60))},
+	},
+	{
+		{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+		{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+		{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 1) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-180))},
+		{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -3, 6) * CFrame.Angles(math.rad(-90), math.rad(-65), math.rad(-180))},
+		{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 6) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-180))},
+		{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -3, 1) * CFrame.Angles(math.rad(90), math.rad(115), math.rad(-180))},
+	}
+}
+
+local JumpAnimations = {
+	{
+		{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+		{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+		{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -1, 1) * CFrame.Angles(math.rad(-90), math.rad(-45), math.rad(-90))},
+		{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -1, 6) * CFrame.Angles(math.rad(-90), math.rad(-45), math.rad(-90))},
+		{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, 0.5, 6) * CFrame.Angles(math.rad(90), math.rad(135), math.rad(-90))},
+		{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, 0.5, 1) * CFrame.Angles(math.rad(90), math.rad(135), math.rad(-90))},
+	},
+	{
+		{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+		{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+		{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -4, 1) * CFrame.Angles(math.rad(-90), math.rad(-160), math.rad(-90))},
+		{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -4, 6) * CFrame.Angles(math.rad(-90), math.rad(-160), math.rad(-90))},
+		{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -4, 6) * CFrame.Angles(math.rad(90), math.rad(45), math.rad(-90))},
+		{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, -4, 1) * CFrame.Angles(math.rad(90), math.rad(45), math.rad(-90))},
+	},
+	{
+		{redBlock = workspace[altUsernames.Torso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 1.5) * CFrame.Angles(math.rad(-65), math.rad(0), math.rad(0))},
+		{redBlock = workspace[altUsernames.SecondTorso].HumanoidRootPart, blueCube = workspace[altUsernames.Head].Torso, offset = CFrame.new(0, -3, 6) * CFrame.Angles(math.rad(75), math.rad(90), math.rad(180))},
+		{redBlock = workspace[altUsernames.RightArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -1, 1) * CFrame.Angles(math.rad(-90), math.rad(-45), math.rad(-90))},
+		{redBlock = workspace[altUsernames.RightLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Right Leg"], offset = CFrame.new(-2.5, -1, 6) * CFrame.Angles(math.rad(-90), math.rad(-45), math.rad(-90))},
+		{redBlock = workspace[altUsernames.LeftLeg].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, 0.5, 6) * CFrame.Angles(math.rad(90), math.rad(135), math.rad(-90))},
+		{redBlock = workspace[altUsernames.LeftArm].HumanoidRootPart, blueCube = workspace[altUsernames.Head]["Left Leg"], offset = CFrame.new(2.5, 0.5, 1) * CFrame.Angles(math.rad(90), math.rad(135), math.rad(-90))},
+	}
+}
+
+local currentState = "Idle"
+local currentAnimIndex = 1
+local lastStateChange = tick()
+local animationDuration = 0.2
+local wasJumping = false
+
+local function enforceNoCollision(character)
+	for _, partName in ipairs({"Head", "Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg"}) do
+		local part = character:FindFirstChild(partName)
+		if part and part:IsA("BasePart") then
+			part.CanCollide = false
+			part.Anchored = false
+		end
+	end
+end
+
+local function applyZeroGravity()
+	for _, mech in ipairs(mechParts) do
+		for _, part in ipairs(mech:GetChildren()) do
+			if part:IsA("BasePart") then
+				local bodyForce = part:FindFirstChild("BodyForce") or Instance.new("BodyForce")
+				bodyForce.Force = Vector3.new(0, workspace.Gravity * part:GetMass(), 0)
+				bodyForce.Parent = part
+			end
+		end
+	end
+end
+
+for _, part in ipairs(mechParts) do
+	if part:FindFirstChild("Humanoid") then
+		part.Humanoid.PlatformStand = true
+	end
+end
+
+local player = Players[altUsernames.Head]
+if player then
+	player.CharacterAdded:Connect(function(character)
+		enforceNoCollision(character)
+	end)
+	if player.Character then
+		enforceNoCollision(player.Character)
+	end
+end
+
+local function updateAttachments()
+	local headHumanoid = headCharacter:FindFirstChildOfClass("Humanoid")
+	if not headHumanoid then return end
+
+	RunService.Heartbeat:Connect(function()
+		local isMoving = headHumanoid.MoveDirection.Magnitude > 0
+		local isJumping = headHumanoid.Jump
+		local newState = "Idle"
+		if isJumping then
+			newState = "Jump"
+		elseif isMoving then
+			newState = "Walk"
+		end
+
+		if newState == "Jump" and not wasJumping then
+			jumpSound:Play()
+		elseif wasJumping and (newState == "Idle" or newState == "Walk") then
+			fallSound:Play()
+		end
+		wasJumping = isJumping
+
+		if newState ~= currentState or tick() - lastStateChange >= animationDuration then
+			currentState = newState
+			currentAnimIndex = (currentAnimIndex % #WalkingAnimations) + 1
+			lastStateChange = tick()
+		end
+
+		local currentAnimation
+		if currentState == "Walk" then
+			currentAnimation = WalkingAnimations[currentAnimIndex]
+		elseif currentState == "Jump" then
+			currentAnimation = JumpAnimations[currentAnimIndex]
+		else
+			currentAnimation = Idle
+		end
+
+		for _, attachment in ipairs(currentAnimation) do
+			local redBlock = attachment.redBlock
+			local blueCube = attachment.blueCube
+			local offset = attachment.offset
+
+			if redBlock and blueCube then
+				local desiredCFrame = blueCube.CFrame:ToWorldSpace(offset)
+				redBlock.CFrame = redBlock.CFrame:Lerp(desiredCFrame, 0.2)
+			end
+		end
+	end)
+end
+
+applyZeroGravity()
+updateAttachments()
